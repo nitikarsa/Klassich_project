@@ -1,0 +1,173 @@
+.product-detail {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px 5% 80px;
+  min-height: 60vh;
+}
+
+.detail-back {
+  display: inline-block;
+  margin-bottom: 30px;
+  color: #555;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.detail-back:hover {
+  color: #111;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: start;
+}
+
+.detail-image {
+  position: relative;
+  overflow: hidden;
+  background: #f0eee9;
+  aspect-ratio: 4 / 5;
+}
+
+.detail-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-status {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  padding: 8px 12px;
+  background: #253b2c;
+  color: white;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.detail-status.sold {
+  background: #777;
+}
+
+.detail-content {
+  padding-top: 16px;
+}
+
+.detail-content h1 {
+  margin: 14px 0;
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.15;
+}
+
+.detail-price {
+  margin: 20px 0;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.detail-divider {
+  height: 1px;
+  background: #dedbd4;
+  margin: 26px 0;
+}
+
+.detail-specs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.detail-specs div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-specs span {
+  color: #777;
+  font-size: 12px;
+}
+
+.detail-specs strong {
+  font-size: 14px;
+}
+
+.detail-description {
+  margin: 28px 0;
+  color: #666;
+  line-height: 1.8;
+  font-size: 14px;
+}
+
+.detail-buy-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 50px;
+  padding: 14px 20px;
+  border: none;
+  background: #253b2c;
+  color: white;
+  text-decoration: none;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.detail-buy-button:hover:not(:disabled) {
+  background: #18281d;
+}
+
+.detail-buy-button:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.detail-note {
+  margin-top: 16px;
+  color: #777;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.detail-not-found {
+  max-width: 700px;
+  min-height: 50vh;
+  margin: 0 auto;
+  padding: 80px 5%;
+  text-align: center;
+}
+
+.detail-not-found h1 {
+  margin: 16px 0;
+}
+
+.detail-not-found p {
+  color: #666;
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .product-detail {
+    padding-top: 24px;
+  }
+
+  .detail-layout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .detail-content {
+    padding-top: 0;
+  }
+
+  .detail-specs {
+    gap: 8px;
+  }
+}
