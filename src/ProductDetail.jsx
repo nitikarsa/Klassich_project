@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { TIKTOK_PROFILE_URL } from "./storeConfig";
+import { API_BASE_URL, getProductImageUrl } from "./api.js";
 import "./ProductDetail.css";
 
 function formatPrice(price) {
@@ -23,7 +24,7 @@ function ProductDetail() {
     async function loadProduct() {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/products/${encodeURIComponent(id)}`,
+          `${API_BASE_URL}/api/products/${encodeURIComponent(id)}`,
           { signal: controller.signal },
         );
 
@@ -52,9 +53,9 @@ function ProductDetail() {
     return () => controller.abort();
   }, [id]);
 
-      if (loading) {
-      return <p role="status">Memuat detail produk...</p>;
-    }
+  if (loading) {
+    return <p role="status">Memuat detail produk...</p>;
+  }
 
     if (loadError) {
       return <p role="alert">Gagal memuat produk: {loadError}</p>;
@@ -83,7 +84,7 @@ function ProductDetail() {
 
       <div className="detail-layout">
         <div className="detail-image">
-          <img src={product.image} alt={product.name} />
+          <img src={getProductImageUrl(product.image)} alt={product.name} />
           <span className={`detail-status ${isSold ? "sold" : ""}`}>
             {isSold ? "TERJUAL" : "TERSEDIA"}
           </span>

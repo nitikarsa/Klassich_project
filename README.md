@@ -1,16 +1,72 @@
-# React + Vite
+# KLASSISCH Store
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Katalog thrift berbasis React dan Vite dengan backend Express, MySQL, serta
+dashboard admin untuk mengelola produk dan foto.
 
-Currently, two official plugins are available:
+## Persiapan
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Buat database MySQL bernama `klassisch_store` atau sesuaikan dengan
+   `DB_NAME`.
+2. Jalankan `server/schema.sql` pada database tersebut. Jika tabel sudah ada,
+   skema hanya membuat tabel yang belum tersedia.
+3. Salin `server/.env.example` menjadi `server/.env`, lalu isi konfigurasi
+   database dan `SESSION_SECRET` dengan nilai rahasia yang unik.
+4. Install dependensi frontend dari root proyek:
 
-## React Compiler
+   ```bash
+   npm install
+   ```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+5. Install dependensi backend:
 
-## Expanding the Oxlint configuration
+   ```bash
+   cd server
+   npm install
+   ```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Akun admin
+
+Isi sementara `ADMIN_EMAIL` dan `ADMIN_PASSWORD` di `server/.env`. Password
+harus memiliki panjang 12-72 byte. Dari folder `server`, jalankan:
+
+```bash
+npm run admin:reset
+```
+
+Perintah ini membuat akun admin atau mereset password untuk email yang sama.
+Hapus nilai `ADMIN_PASSWORD` dari file `.env` setelah selesai. Jangan pernah
+commit `.env`.
+
+## Menjalankan secara lokal
+
+Jalankan backend dan frontend di dua terminal.
+
+Backend, dari folder `server`:
+
+```bash
+npm run dev
+```
+
+Frontend, dari root proyek:
+
+```bash
+npm run dev
+```
+
+Secara default, frontend tersedia di `http://localhost:5173` dan API di
+`http://localhost:3000`. Buka `http://localhost:5173/admin/login` untuk login
+dan mengelola produk. Jika frontend berjalan pada origin lain, sesuaikan
+`FRONTEND_ORIGIN` di `server/.env`.
+
+Foto upload disimpan lokal di `server/uploads/` dan tidak seharusnya ikut
+di-commit. Foto katalog yang dibutuhkan saat deploy perlu disediakan di folder
+upload pada server target atau dipindahkan ke object storage.
+
+## Endpoint utama
+
+- `GET /api/products` dan `GET /api/products/:id` untuk katalog publik.
+- `POST /api/products`, `PUT /api/products/:id`, dan
+  `DELETE /api/products/:id` hanya dapat dipakai dengan sesi admin.
+- `POST /api/auth/login`, `GET /api/auth/me`, dan `POST /api/auth/logout`
+  mengelola sesi admin.
+- `GET /api/health` dan `GET /api/db-health` untuk pemeriksaan layanan.

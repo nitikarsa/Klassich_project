@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { TIKTOK_PROFILE_URL } from "./storeConfig";
 import ProductDetail from "./ProductDetail.jsx";
+import AdminLogin from "./AdminLogin.jsx";
+import AdminPage from "./AdminPage.jsx";
+import { API_BASE_URL, getProductImageUrl } from "./api.js";
 
 function formatPrice(price) {
   return new Intl.NumberFormat("id-ID", {
@@ -18,7 +21,11 @@ function ProductCard({ product }) {
   return (
     <article className="product-card">
       <div className={`product-image ${isSold ? "sold" : ""}`}>
-        <img src={product.image} alt={product.name} loading="lazy" />
+        <img
+          src={getProductImageUrl(product.image)}
+          alt={product.name}
+          loading="lazy"
+        />
 
         <span className={`product-status ${isSold ? "sold" : ""}`}>
           {isSold ? "TERJUAL" : "TERSEDIA"}
@@ -76,7 +83,7 @@ function CatalogPage() {
 
     async function loadProducts() {
       try {
-        const response = await fetch("http://localhost:3000/api/products", {
+        const response = await fetch(`${API_BASE_URL}/api/products`, {
           signal: controller.signal,
         });
 
@@ -292,11 +299,64 @@ function CatalogPage() {
   );
 }
 
+function AdminRoute() {
+  const [authState, setAuthState] = useState("checking");
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function checkSession() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+          credentials: "include",
+          signal: controller.signal,
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || "Gagal memeriksa sesi admin.");
+        }
+
+        setAuthState(result.authenticated ? "authenticated" : "anonymous");
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          setAuthState("error");
+        }
+      }
+    }
+
+    checkSession();
+    return () => controller.abort();
+  }, []);
+
+  if (authState === "checking") {
+    return <p role="status">Memeriksa sesi admin...</p>;
+  }
+
+  if (authState === "anonymous") {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  if (authState === "error") {
+    return (
+      <main className="detail-not-found">
+        <h1>Admin tidak dapat dimuat.</h1>
+        <p>Periksa apakah server backend sedang berjalan, lalu muat ulang.</p>
+      </main>
+    );
+  }
+
+  return <AdminPage />;
+}
+
 function App() {
   return (
     <Routes>
       <Route path="/" element={<CatalogPage />} />
       <Route path="/products/:id" element={<ProductDetail />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminRoute />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
